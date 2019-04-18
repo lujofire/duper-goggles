@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Voting Center</title>
+    <!-- Bootswatch theme-->
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCTSogsSaQv7c2B9kXt0c1ac9AAoKNHcfw",
+        authDomain: "app-practica1.firebaseapp.com",
+        databaseURL: "https://app-practica1.firebaseio.com",
+        projectId: "app-practica1",
+        storageBucket: "app-practica1.appspot.com",
+        messagingSenderId: "746554119380"
+    };
+    firebase.initializeApp(config);
+    </script>
+</head>
+<body>
+<!--Navegation-->
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="#">Voting Center App</a>
+</nav>
+
+<div class="container">
+    <div id="App" class="row pt-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Voting Table</h4>
+                </div>
+                <form id="voting-form" class="card-body">
+                    <div class="form-group">
+                        <h6>Number Table</h6>
+                        <input type="number" id="idetiquetacodigo" min="345" max="410" placeholder="Code Table" class="form-control">
+                    </div>
+                    <div>
+                        <h6>Code Coordinator</h6>
+                        <input type="number" id="idCoordinator" min="1" max="25" step="1" placeholder="Code Coordinator" class="form-control">
+                    </div>
+                    <div>
+                        <h6>Code VotingCenter</h6> 
+                        <input type="number" id="idVotingTable" min="1" max="20" step="1" placeholder="Code Center" class="form-control">
+                    </div>
+                    <div>
+                        <h6>Registered</h6> 
+                        <input type="number" id="registered" min="1" max="300" step="1" placeholder="Registered" class="form-control">
+                    </div>
+                    <div>
+                        <h6>Votes</h6> 
+                        <input type="number" id="vote" min="1" max="300" step="1" placeholder="Number Votes" class="form-control">
+                    </div>
+                    <button type="button"  onclick="addMesa()" class="btn btn-primary btn-block">Guardar</button>
+                </form>
+            </div>
+        </div>
+        <div id="table-list" class="col-md-9"></div>
+    </div>
+</div>
+
+<script>
+        function addMesa(){
+        
+            var codigo = document.getElementById('idetiquetacodigo').value; // obtengo el valor del codigo por medio del id
+            var idCoordinator = document.getElementById('idCoordinator').value;//codigo de coordinator del html
+            var idVotingTable = document.getElementById('idVotingTable').value;
+            var registered = document.getElementById('registered').value;
+            var vote = document.getElementById('vote').value;
+            //alert("mesa");
+            if(codigo === '' || idCoordinator === '' || idVotingTable === '' || registered === '' || vote === ''){
+                return alert('complete todos los campos');
+            }
+
+            // interfaz con el usuario
+            const TableList = document.getElementById('table-list');
+            const element = document.createElement('div');
+            element.innerHTML = `
+                    <div class="card text-center mb-4">
+                        <div class="card-body">
+                        <strong>Number Table</strong>: ${codigo} -
+                        <strong>Code Coordinator</strong>: ${idCoordinator} -
+                        <strong>Code VotingCenter</strong>: ${idVotingTable} -
+                        <strong>Registered</strong>: ${registered} -
+                        <strong>Votes</strong>: ${vote}
+                        <a href="#" class="btn btn-danger" name="delete">Delete</a>
+                        <a href="#" class="btn btn-success" name="edit">Edit</a>
+                        </div>
+                    </div>
+            `;
+            TableList.appendChild(element);
+            document.getElementById('voting-form').reset();
+
+           // 
+            firebase.database().ref('mesa/' + codigo).set({
+                code: codigo,
+                idCoordinator: idCoordinator,
+                idVotingCenter : idVotingTable,
+                registered: registered,
+                status: "activo",
+                votes: vote
+            },
+            function(error) {
+                if (error) {
+                    // The write failed...
+                } else {
+                    // Data saved successfully!
+                    alert("El registro fue actualizado correctamente.");
+                    //location.href="demo_view_coordinator.html";
+                }
+            });
+            //alert("El registro fue actualizado correctamente.");
+          
+    
+        }
+      </script>
+     
+</body>
+</html>
